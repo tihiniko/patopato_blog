@@ -6,7 +6,7 @@ class PostsController < ApplicationController
   # https://scotch.io/tutorials/build-a-blog-with-ruby-on-rails-part-1
   # Index action to render all posts
   def index
-    @posts = Post.all
+    @posts = Post.all.sort_by(&:created_at).reverse
   end
 
   # New action for creating post
@@ -34,7 +34,7 @@ class PostsController < ApplicationController
   def update
     if @post.update_attributes(post_params)
       flash[:notice] = "Successfully updated post!"
-      redirect_to post_path(@posts)
+      redirect_to post_path(@post)
     else
       flash[:alert] = "Error updating post!"
       render :edit
@@ -47,6 +47,7 @@ class PostsController < ApplicationController
 
   # The destroy action removes the post permanently from the database
   def destroy
+    find_post
     if @post.destroy
       flash[:notice] = "Successfully deleted post!"
       redirect_to posts_path
