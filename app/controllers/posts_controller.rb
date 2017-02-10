@@ -1,5 +1,7 @@
 class PostsController < ApplicationController
   before_action :find_post, only: [:edit, :update, :show, :delete]
+    #This authenticates admin whenever a post is to be created, updated or destroyed.
+  before_action :authenticate_admin!, except: [:index, :show]
   # source for this code 
   # https://scotch.io/tutorials/build-a-blog-with-ruby-on-rails-part-1
   # Index action to render all posts
@@ -14,8 +16,8 @@ class PostsController < ApplicationController
 
   # Create action saves the post into database
   def create
-    @post = Post.new
-    if @post.save(post_params)
+    @post = Post.new(post_params)
+    if @post.save
       flash[:notice] = "Successfully created post!"
       redirect_to post_path(@post)
     else
